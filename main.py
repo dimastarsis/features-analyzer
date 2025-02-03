@@ -1,7 +1,6 @@
-import network.gitlab
-import network.keadmin
 from network.model import ProjectFile
-from parser import extract_flags_from_config, extract_flags_from_features_v2
+from network import gitlab, keadmin
+from parser import features_v2, config
 
 CONFIG = ProjectFile(project_name="clusterconfig_storage_production", file_path="ft/config", branch="default")
 FEATURES_V2 = ProjectFile(
@@ -12,14 +11,14 @@ FEATURES_V2 = ProjectFile(
 
 
 def main() -> None:
-    config_text = network.gitlab.fetch_file(CONFIG)
-    config_flags = extract_flags_from_config(config_text)
+    config_text = gitlab.fetch_file(CONFIG)
+    config_flags = config.extract_flags(config_text)
     # print("Извлечённые флаги из конфига:")
     # for key in config_flags.keys():
     #     print(config_flags[key])
 
-    features_v2_text = network.gitlab.fetch_file(FEATURES_V2)
-    features_v2_flags = extract_flags_from_features_v2(features_v2_text)
+    features_v2_text = gitlab.fetch_file(FEATURES_V2)
+    features_v2_flags = features_v2.extract_flags(features_v2_text)
     # print("Извлечённые флаги из модели v2:")
     # for key in features_v2_flags.keys():
     #     print(features_v2_flags[key])
@@ -45,6 +44,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    # print(network.keadmin.find_feature("CryptoEnvironmentRemindingLightBox"))
-    # print(network.keadmin.find_adjustments_new("CryptoEnvironmentRemindingLightBox"))
-    print(network.keadmin.find_adjustments("MultiUser.WorkGroupsEnabled.GroupSigner"))
+    print(keadmin.find_feature("CryptoEnvironmentRemindingLightBox"))
+    print(keadmin.find_adjustments_new("CryptoEnvironmentRemindingLightBox"))
+    print(keadmin.find_adjustments("MultiUser.WorkGroupsEnabled.GroupSigner"))

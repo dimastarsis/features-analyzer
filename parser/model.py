@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ConfigFeatureFlag:
+class ConfigFlag:
     prefix: str | None
     name: str
     value: str
@@ -10,7 +10,7 @@ class ConfigFeatureFlag:
 
 
 @dataclass
-class ModelFeatureFlagV2:
+class FeatureFlagV2:
     global_name: str | None
     consumer_name: str | None
     consumer: str
@@ -18,7 +18,11 @@ class ModelFeatureFlagV2:
     value_type: str
 
     @property
+    def net_search_name(self) -> str:
+        return self.consumer_name if self.consumer_name else self.property_name
+
+    @property
     def config_search_name(self) -> str:
         if self.global_name:
             return self.global_name
-        return "Features." + (self.consumer_name if self.consumer_name else self.property_name)
+        return "Features." + self.net_search_name

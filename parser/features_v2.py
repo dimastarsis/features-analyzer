@@ -1,32 +1,12 @@
 import re
-from model import ConfigFeatureFlag, ModelFeatureFlagV2
-
-
-def extract_flags_from_config(config_text: str) -> dict[str, ConfigFeatureFlag]:
-    feature_flags = dict()
-
-    config_lines = config_text.split('\n')
-    for line_number, line in enumerate(config_lines):
-        if not line:
-            continue
-
-        name, value = line.split('=', 1)
-        name, value = name.strip(), value.strip()
-        prefix = None
-        if '.' in name:
-            prefix = name.split('.')[0]
-
-        feature_flags[name] = ConfigFeatureFlag(prefix, name, value, line_number)
-
-    return feature_flags
-
+from .model import FeatureFlagV2
 
 GLOBAL_SETTING_NAME = 'globalSettingName'
 CONSUMER_SETTING_NAME = 'consumerSettingName'
 CONSUMER = 'consumer'
 
 
-def parse_feature_v2_attribute(attr: str) -> dict[str, str]:
+def _parse_attribute(attr: str) -> dict[str, str]:
     attr = attr.strip()
     attr_dict = {
         GLOBAL_SETTING_NAME: "null",
@@ -59,7 +39,7 @@ def parse_feature_v2_attribute(attr: str) -> dict[str, str]:
     return attr_dict
 
 
-def extract_flags_from_features_v2(features_v2_text: str) -> dict[str, ModelFeatureFlagV2]:
+def extract_flags(features_v2_text: str) -> dict[str, FeatureFlagV2]:
     pattern = re.compile(
         r'\[FeatureFlag(?:\(([\s\S]*?)\))?]\s*'  # Опциональный `(...)` внутри `FeatureFlag`
         r'public\s+([\w?]+)\s+(\w+)',  # public {тип} {название}
@@ -72,8 +52,8 @@ def extract_flags_from_features_v2(features_v2_text: str) -> dict[str, ModelFeat
 
     feature_flags = dict()
     for attr, value_type, property_name in flags_matches:
-        attr_dict = parse_feature_v2_attribute(attr)
-        feature_flags[property_name] = ModelFeatureFlagV2(
+        attr_dict = _parse_attribute(attr)
+        feature_flags[property_name] = FeatureFlagV2(
             attr_dict[GLOBAL_SETTING_NAME].replace('\"', '') if attr_dict[GLOBAL_SETTING_NAME] != "null" else None,
             attr_dict[CONSUMER_SETTING_NAME].replace('\"', '') if attr_dict[CONSUMER_SETTING_NAME] != "null" else None,
             attr_dict[CONSUMER].split('.', 1)[1],
