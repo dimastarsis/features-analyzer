@@ -1,5 +1,6 @@
-from model import ProjectFile
-from network import fetch_gitlab_file
+import network.gitlab
+import network.keadmin
+from network.model import ProjectFile
 from parser import extract_flags_from_config, extract_flags_from_features_v2
 
 CONFIG = ProjectFile(project_name="clusterconfig_storage_production", file_path="ft/config", branch="default")
@@ -11,17 +12,17 @@ FEATURES_V2 = ProjectFile(
 
 
 def main() -> None:
-    config_text = fetch_gitlab_file(CONFIG)
+    config_text = network.gitlab.fetch_file(CONFIG)
     config_flags = extract_flags_from_config(config_text)
-    print("Извлечённые флаги из конфига:")
-    for key in config_flags.keys():
-        print(config_flags[key])
+    # print("Извлечённые флаги из конфига:")
+    # for key in config_flags.keys():
+    #     print(config_flags[key])
 
-    features_v2_text = fetch_gitlab_file(FEATURES_V2)
+    features_v2_text = network.gitlab.fetch_file(FEATURES_V2)
     features_v2_flags = extract_flags_from_features_v2(features_v2_text)
-    print("Извлечённые флаги из модели v2:")
-    for key in features_v2_flags.keys():
-        print(features_v2_flags[key])
+    # print("Извлечённые флаги из модели v2:")
+    # for key in features_v2_flags.keys():
+    #     print(features_v2_flags[key])
 
     detected_feature_flags = list()
     undetected_feature_flags = list()
@@ -35,7 +36,7 @@ def main() -> None:
     print(f"Обнаружили: {len(detected_feature_flags)} совпадений")
     print(f"Не нашли: {len(undetected_feature_flags)}")
     for feature_flag in undetected_feature_flags:
-        print(feature_flag.property_name)
+        print(feature_flag)
 
     undetected_config_flags = filter(lambda config_flag: config_flag.prefix == "Features", config_flags.values())
     for config_feature_v2 in undetected_config_flags:
@@ -44,3 +45,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    # print(network.keadmin.find_feature("CryptoEnvironmentRemindingLightBox"))
+    # print(network.keadmin.find_adjustments_new("CryptoEnvironmentRemindingLightBox"))
+    print(network.keadmin.find_adjustments("MultiUser.WorkGroupsEnabled.GroupSigner"))

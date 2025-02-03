@@ -22,10 +22,3 @@ class ModelFeatureFlagV2:
         if self.global_name:
             return self.global_name
         return "Features." + (self.consumer_name if self.consumer_name else self.property_name)
-
-
-@dataclass
-class ProjectFile:
-    project_name: str
-    file_path: str
-    branch: str
