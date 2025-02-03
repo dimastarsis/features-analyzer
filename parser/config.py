@@ -5,7 +5,7 @@ def extract_flags(config_text: str) -> dict[str, ConfigFlag]:
     feature_flags = dict()
 
     config_lines = config_text.split('\n')
-    for line_number, line in enumerate(config_lines):
+    for i, line in enumerate(config_lines):
         if not line:
             continue
 
@@ -15,6 +15,6 @@ def extract_flags(config_text: str) -> dict[str, ConfigFlag]:
         if '.' in name:
             prefix = name.split('.')[0]
 
-        feature_flags[name] = ConfigFlag(prefix, name, value, line_number)
+        feature_flags[name] = ConfigFlag(prefix, name, value, i)
 
     return feature_flags

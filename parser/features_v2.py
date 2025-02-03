@@ -39,6 +39,15 @@ def _parse_attribute(attr: str) -> dict[str, str]:
     return attr_dict
 
 
+def _get_line_number(lines: list[str], target: str, start: int) -> int:
+    for i in range(start, len(lines)):
+        for part in lines[i].split():
+            if part == target:
+                return i
+    else:
+        raise ValueError(f"{target} не найден начиная с индекса строки {start}")
+
+
 def extract_flags(features_v2_text: str) -> dict[str, FeatureFlagV2]:
     pattern = re.compile(
         r'\[FeatureFlag(?:\(([\s\S]*?)\))?]\s*'  # Опциональный `(...)` внутри `FeatureFlag`
@@ -50,15 +59,20 @@ def extract_flags(features_v2_text: str) -> dict[str, FeatureFlagV2]:
     if len(flags_matches) != public_modifier_count - 1:
         raise RuntimeError(f"Число потенциальных флагов {public_modifier_count - 1}, распарсили {len(flags_matches)}")
 
+    lines = features_v2_text.splitlines()
+    line_number = -1
     feature_flags = dict()
     for attr, value_type, property_name in flags_matches:
         attr_dict = _parse_attribute(attr)
+        property_line_number = line_number = _get_line_number(lines, property_name, line_number + 1)
+
         feature_flags[property_name] = FeatureFlagV2(
             attr_dict[GLOBAL_SETTING_NAME].replace('\"', '') if attr_dict[GLOBAL_SETTING_NAME] != "null" else None,
             attr_dict[CONSUMER_SETTING_NAME].replace('\"', '') if attr_dict[CONSUMER_SETTING_NAME] != "null" else None,
             attr_dict[CONSUMER].split('.', 1)[1],
             property_name,
-            value_type
+            value_type,
+            property_line_number
         )
 
     return feature_flags

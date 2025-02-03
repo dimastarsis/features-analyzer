@@ -16,13 +16,14 @@ class FeatureFlagV2:
     consumer: str
     property_name: str
     value_type: str
+    line_number: int
 
     @property
-    def net_search_name(self) -> str:
+    def keadmin_search_name(self) -> str:
         return self.consumer_name if self.consumer_name else self.property_name
 
     @property
     def config_search_name(self) -> str:
         if self.global_name:
             return self.global_name
-        return "Features." + self.net_search_name
+        return "Features." + self.keadmin_search_name
