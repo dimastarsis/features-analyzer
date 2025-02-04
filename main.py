@@ -1,10 +1,11 @@
+import asyncio
 import network
 import parser
 import analyzer
 import writer
 
 
-def main() -> None:
+async def main() -> None:
     features_v2_file = network.ProjectFile.parse(network.FEATURES_V2_URL)
     config_file = network.ProjectFile.parse(network.CONFIG_URL)
 
@@ -16,9 +17,16 @@ def main() -> None:
     config_flags = parser.config.extract_flags(config_text)
     print(f"Извлекли из конфига {len(config_flags)} флагов")
 
-    analyze_results = analyzer.features_v2.analyze(features_v2_flags, config_flags)
+    keadmin_flag_infos = await network.keadmin.fetch_infos(
+        map(
+            lambda feature_v2_flag: feature_v2_flag.keadmin_search_name,
+            features_v2_flags.values()
+        )
+    )
+
+    analyze_results = analyzer.features_v2.analyze(features_v2_flags, config_flags, keadmin_flag_infos)
     writer.csv_writer.write(analyze_results)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
