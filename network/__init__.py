@@ -1,8 +1,6 @@
-import os
-from pathlib import Path
-from dotenv import load_dotenv
+from .constant import *
+from .model import *
+from . import gitlab
+from . import keadmin
 
-load_dotenv(Path(__file__).parent / ".env")
-
-GITLAB_ACCESS_TOKEN = os.getenv("GITLAB_ACCESS_TOKEN")
-KEADMIN_COOKIE = os.getenv("KEADMIN_COOKIE")
+__all__ = [constant, model, gitlab, keadmin]

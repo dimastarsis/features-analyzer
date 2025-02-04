@@ -1,7 +1,9 @@
-GITLAB_API_URL = "https://git.skbkontur.ru/api/v4"
-KEADMIN_API_URL = "https://keadmin.kontur.ru/api"
-
-FEATURES_V2_URL = ("https://git.skbkontur.ru/ke/ft/-/blob/master/FileTransfer.Lib/Providers/FeaturesV2"
-                   "/FeatureFlagsModel.cs")
-CONFIG_URL = "https://git.skbkontur.ru/sps/clusterconfig_storage_production/-/blob/default/ft/config"
+GITLAB_URL = "https://git.skbkontur.ru"
 KEADMIN_URL = "https://keadmin.kontur.ru"
+
+GITLAB_API_URL = f"{GITLAB_URL}/api/v4"
+KEADMIN_API_URL = f"{KEADMIN_URL}/api"
+
+FEATURES_V2_URL = (f"{GITLAB_URL}/ke/ft/-/blob/master/FileTransfer.Lib/Providers/FeaturesV2"
+                   "/FeatureFlagsModel.cs")
+CONFIG_URL = f"{GITLAB_URL}/sps/clusterconfig_storage_production/-/blob/default/ft/config"

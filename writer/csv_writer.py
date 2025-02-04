@@ -49,7 +49,7 @@ def write(results: list[FeatureFlagV2AnalyzeResult], filepath: str = "feature_fl
         sub_headers = [
             "Name", "Consumer", "Value type",
             "Name", "Value",
-            "Name", "Adjustments", "User settings"
+            "Name", "User settings", "Adjustments"
         ]
 
         writer.writerow(headers)

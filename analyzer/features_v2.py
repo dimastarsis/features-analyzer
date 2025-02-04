@@ -1,27 +1,13 @@
-from network.model import ProjectFile, KeAdminFlagInfo
+from network.model import KeAdminFlagInfo
 from parser.model import ConfigFlag, FeatureFlagV2
-from network import gitlab, keadmin
-from parser import features_v2, config
+from network import keadmin
 from .model import FeatureFlagV2AnalyzeResult
 from tqdm import tqdm
 
-CONFIG = ProjectFile(project_name="clusterconfig_storage_production", file_path="ft/config", branch="default")  # todo парсить из констант и импортировать
-FEATURES_V2 = ProjectFile(
-    project_name="ft",
-    file_path="FileTransfer.Lib/Providers/FeaturesV2/FeatureFlagsModel.cs",
-    branch="master"
-)
 
-
-def analyze() -> list[FeatureFlagV2AnalyzeResult]:
-    config_text = gitlab.fetch_file(CONFIG)  # todo рефакторинг, нужно вытащить от сюда этот код
-    config_flags = config.extract_flags(config_text)
-    print(f"Извлекли из конфига {len(config_flags)} флагов")
-
-    features_v2_text = gitlab.fetch_file(FEATURES_V2)
-    features_v2_flags = features_v2.extract_flags(features_v2_text)
-    print(f"Извлекли из модели v2 {len(features_v2_flags)} флагов")
-
+def analyze(
+    features_v2_flags: dict[str, FeatureFlagV2], config_flags: dict[str, ConfigFlag]
+) -> list[FeatureFlagV2AnalyzeResult]:
     undetected_features_v2_flag_keys = set(features_v2_flags.keys())
     undetected_config_flag_keys = set(config_flags.keys())
     analyze_results: list[tuple[FeatureFlagV2, ConfigFlag, KeAdminFlagInfo]] = list()
@@ -35,7 +21,7 @@ def analyze() -> list[FeatureFlagV2AnalyzeResult]:
             undetected_config_flag_keys.remove(config_search_name)
 
         keadmin_flag_info = keadmin.get_keadmin_info(features_v2_flags[features_v2_key].keadmin_search_name)
-        if not keadmin_flag_info.empty and features_v2_key in undetected_features_v2_flag_keys:
+        if keadmin_flag_info and features_v2_key in undetected_features_v2_flag_keys:
             undetected_features_v2_flag_keys.remove(features_v2_key)
 
         analyze_results.append(
@@ -46,13 +32,12 @@ def analyze() -> list[FeatureFlagV2AnalyzeResult]:
             )
         )
 
-    print(f"Нашли значение для {len(features_v2_flags) - len(undetected_features_v2_flag_keys)} флагов v2")
-    print(f"Не нашли значение для {len(undetected_features_v2_flag_keys)} флагов v2:")
+    print(f"Не нашли информации по следующим флагам из модели v2:")
     for features_v2_key in undetected_features_v2_flag_keys:
-        print(f"- {features_v2_flags[features_v2_key]}")
+        print(f"- {features_v2_flags[features_v2_key].property_name}")
 
-    print(f"Не нашли исходный флаг для:")
+    print(f"Не нашли информации по следующим флагам из конфига:")
     for config_key in undetected_config_flag_keys:
-        print(f"- {config_flags[config_key]}")
+        print(f"- {config_flags[config_key].name}")
 
     return analyze_results

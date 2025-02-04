@@ -1,8 +1,8 @@
 import requests
 from urllib.parse import quote
-from . import GITLAB_ACCESS_TOKEN
 from .model import ProjectFile
 from .constant import GITLAB_API_URL
+from .secret import GITLAB_ACCESS_TOKEN
 
 
 def get_project_id(project_name: str) -> int:
