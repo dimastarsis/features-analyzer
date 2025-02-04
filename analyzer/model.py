@@ -4,7 +4,7 @@ from network.model import KeAdminFlagInfo
 
 
 @dataclass
-class CSVFeatureFlagV2Record:
+class FeatureFlagV2AnalyzeResult:
     feature_v2_flag: FeatureFlagV2
     config_flag: ConfigFlag | None
-    keadmin_info: KeAdminFlagInfo
+    keadmin_info: KeAdminFlagInfo | None

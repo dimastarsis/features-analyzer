@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "features-analizer"
+name = "features-analyzer"
 version = "0.1.0"
 description = ""
 authors = ["dimastarsis <kurilin.dmitriy@gmail.com>"]
