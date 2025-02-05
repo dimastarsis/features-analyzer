@@ -30,15 +30,11 @@ class FeatureFlagV2:
         return "Features." + self.keadmin_search_name
 
     @property
-    def youtrack_search_name(self) -> str:
+    def youtrack_search_names(self) -> Iterator[str]:
         if self.global_name:
-            return self.global_name
-        return self.keadmin_search_name
-        # todo
-        # if self.global_name:
-        #     yield self.global_name
-        # if self.consumer_name:
-        #     yield "Features." + self.consumer_name
-        #     yield self.consumer_name
-        # yield "Features." + self.property_name
-        # yield self.property_name
+            yield self.global_name
+        if self.consumer_name:
+            yield "Features." + self.consumer_name
+            yield self.consumer_name
+        yield "Features." + self.property_name
+        yield self.property_name

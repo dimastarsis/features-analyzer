@@ -29,9 +29,8 @@ def analyze(
                 undetected_features_v2_flag_keys.remove(features_v2_key)
 
         youtrack_flag_info: YouTrackFlagInfo = None
-        youtrack_search_name = features_v2_flags[features_v2_key].youtrack_search_name
-        if youtrack_search_name in youtrack_flag_infos:
-            youtrack_flag_info = youtrack_flag_infos[youtrack_search_name]
+        if features_v2_key in youtrack_flag_infos:
+            youtrack_flag_info = youtrack_flag_infos[features_v2_key]
             # не обновляем 'undetected_features_v2_flag_keys'
 
         analyze_results.append(

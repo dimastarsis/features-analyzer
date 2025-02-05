@@ -22,7 +22,8 @@ async def main() -> None:
         map(lambda feature_v2_flag: feature_v2_flag.keadmin_search_name, features_v2_flags.values())
     )
     youtrack_flag_infos = await network.youtrack.fetch_infos(
-        map(lambda feature_v2_flag: feature_v2_flag.youtrack_search_name, features_v2_flags.values())
+        {feature_v2_flag_key: features_v2_flags[feature_v2_flag_key].youtrack_search_names
+         for feature_v2_flag_key in features_v2_flags}
     )
 
     analyze_results = analyzer.features_v2.analyze(
@@ -31,7 +32,7 @@ async def main() -> None:
     writer.write_csv(analyze_results, features_v2_file, config_file)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # todo тесты, убрать requests из .toml
     loop = asyncio.get_event_loop()
 
     try:
