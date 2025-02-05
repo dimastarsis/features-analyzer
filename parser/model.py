@@ -27,3 +27,7 @@ class FeatureFlagV2:
         if self.global_name:
             return self.global_name
         return "Features." + self.keadmin_search_name
+
+    @property
+    def youtrack_search_name(self) -> str:
+        return self.config_search_name

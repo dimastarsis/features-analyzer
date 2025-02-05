@@ -1,7 +1,7 @@
 import json
 from tqdm.asyncio import tqdm
 from urllib.parse import quote
-from .model import ProjectFile
+from .model import GitLabFileReference, GitLabFile
 from typing import Iterable
 from .constant import GITLAB_API_URL
 from .secret import GITLAB_ACCESS_TOKEN
@@ -20,22 +20,22 @@ async def get_project_id(project_name: str) -> int:
     raise ValueError(response.text)
 
 
-async def fetch_file(project_file: ProjectFile) -> tuple[ProjectFile, str]:
-    project_id = await get_project_id(project_file.project_name)
+async def fetch_file(file_ref: GitLabFileReference) -> GitLabFile:
+    project_id = await get_project_id(file_ref.project_name)
 
-    encoded_path = quote(project_file.file_path, safe='')
-    url = f"{GITLAB_API_URL}/projects/{project_id}/repository/files/{encoded_path}/raw?ref={project_file.branch}"
+    encoded_path = quote(file_ref.file_path, safe='')
+    url = f"{GITLAB_API_URL}/projects/{project_id}/repository/files/{encoded_path}/raw?ref={file_ref.branch}"
     headers = {"PRIVATE-TOKEN": GITLAB_ACCESS_TOKEN}
 
-    return project_file, await API.get(url, headers=headers)
+    return GitLabFile(file_ref, project_id, content=await API.get(url, headers=headers))
 
 
-async def fetch_files(*project_files: Iterable[ProjectFile]) -> Iterable[str]:
-    tasks = [fetch_file(project_file) for project_file in project_files]
+async def fetch_files(*file_refs: Iterable[GitLabFileReference]) -> Iterable[GitLabFile]:
+    tasks = [fetch_file(file_ref) for file_ref in file_refs]
 
-    results_map: dict[ProjectFile, str] = dict()
+    results_map: dict[GitLabFileReference, GitLabFile] = dict()
     for task in tqdm.as_completed(tasks, total=len(tasks), desc="Загружаем информацию из gitlab"):
-        project_file, content = await task
-        results_map[project_file] = content
+        file = await task
+        results_map[file.reference] = file
 
-    return (results_map[project_file] for project_file in project_files)
+    return (results_map[file_ref] for file_ref in file_refs)

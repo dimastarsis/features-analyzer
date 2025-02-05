@@ -75,4 +75,5 @@ def extract_flags(features_v2_text: str) -> dict[str, FeatureFlagV2]:
             property_line_number
         )
 
+    print(f"Извлекли из модели v2 {len(feature_flags)} флагов")
     return feature_flags

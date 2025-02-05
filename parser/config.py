@@ -17,4 +17,5 @@ def extract_flags(config_text: str) -> dict[str, ConfigFlag]:
 
         feature_flags[name] = ConfigFlag(prefix, name, value, i)
 
+    print(f"Извлекли из конфига {len(feature_flags)} флагов")
     return feature_flags

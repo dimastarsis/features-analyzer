@@ -5,8 +5,8 @@ from .constant import GITLAB_URL
 
 
 @dataclass
-class ProjectFile:
-    group: str | None
+class GitLabFileReference:
+    group_name: str | None
     project_name: str
     file_path: str
     branch: str
@@ -16,7 +16,7 @@ class ProjectFile:
         return hash(tuple(field_values))
 
     @staticmethod
-    def parse(url: str) -> 'ProjectFile':
+    def parse(url: str) -> 'GitLabFileReference':
         pattern = re.compile(
             rf"{re.escape(GITLAB_URL)}/"  # Экранируем URL
             r"(?P<group>[^/]+(?:/[^/]+)*/)?"  # Необязательная группа
@@ -29,12 +29,19 @@ class ProjectFile:
         if not match:
             raise ValueError(url)
 
-        return ProjectFile(
+        return GitLabFileReference(
             match.group("group"),
             match.group("project"),
             match.group("file_path"),
             match.group("branch")
         )
+
+
+@dataclass
+class GitLabFile:
+    reference: GitLabFileReference
+    project_id: int
+    content: str
 
 
 @dataclass
