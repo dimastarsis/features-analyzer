@@ -1,4 +1,4 @@
 from .model import *
-from . import csv_writer
+from .csv_writer import write_csv
 
-__all__ = [model, csv_writer]
+__all__ = [model, write_csv]

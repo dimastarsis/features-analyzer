@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from typing import Any
 import re
 from .constant import GITLAB_URL
@@ -10,6 +10,10 @@ class ProjectFile:
     project_name: str
     file_path: str
     branch: str
+
+    def __hash__(self) -> int:
+        field_values = (getattr(self, field.name) for field in fields(self))
+        return hash(tuple(field_values))
 
     @staticmethod
     def parse(url: str) -> 'ProjectFile':

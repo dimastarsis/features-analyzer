@@ -37,7 +37,7 @@ def map_analyze_result(result: FeatureFlagV2AnalyzeResult) -> FeatureFlagV2RowDa
     )
 
 
-def write(results: list[FeatureFlagV2AnalyzeResult], filepath: str = "feature_flags.csv") -> None:
+def write_csv(results: list[FeatureFlagV2AnalyzeResult], filepath: str = "feature_flags.csv") -> None:
     with open(filepath, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
 
