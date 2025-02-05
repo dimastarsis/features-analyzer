@@ -19,13 +19,15 @@ async def main() -> None:
     await asyncio.sleep(0.5)  # чтобы корректно напечаталось
 
     keadmin_flag_infos = await network.keadmin.fetch_infos(
-        map(
-            lambda feature_v2_flag: feature_v2_flag.keadmin_search_name,
-            features_v2_flags.values()
-        )
+        map(lambda feature_v2_flag: feature_v2_flag.keadmin_search_name, features_v2_flags.values())
+    )
+    youtrack_flag_infos = await network.youtrack.fetch_infos(
+        map(lambda feature_v2_flag: feature_v2_flag.youtrack_search_name, features_v2_flags.values())
     )
 
-    analyze_results = analyzer.features_v2.analyze(features_v2_flags, config_flags, keadmin_flag_infos)
+    analyze_results = analyzer.features_v2.analyze(
+        features_v2_flags, config_flags, keadmin_flag_infos, youtrack_flag_infos
+    )
     writer.write_csv(analyze_results, features_v2_file, config_file)
 
 

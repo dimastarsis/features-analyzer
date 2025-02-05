@@ -17,6 +17,7 @@ async def get_project_id(project_name: str) -> int:
 
     if json_data:
         return int(json_data[0]['id'])
+
     raise ValueError(response.text)
 
 
@@ -36,6 +37,6 @@ async def fetch_files(*file_refs: Iterable[GitLabFileReference]) -> Iterable[Git
     results_map: dict[GitLabFileReference, GitLabFile] = dict()
     for task in tqdm.as_completed(tasks, total=len(tasks), desc="Загружаем информацию из gitlab"):
         file = await task
-        results_map[file.reference] = file
+        results_map[file.reference] = file  # todo поаккуратнее
 
     return (results_map[file_ref] for file_ref in file_refs)

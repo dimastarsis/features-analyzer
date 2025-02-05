@@ -52,6 +52,12 @@ class KeAdminFlagInfo:
     adjustments_new_count: int
 
 
+@dataclass
+class YouTrackFlagInfo:
+    feature_name: str
+    issues_count: int
+
+
 DictJsonData = dict[str, Any]
 ListJsonData = list[Any]
 JsonData = DictJsonData | ListJsonData

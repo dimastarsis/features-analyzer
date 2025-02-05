@@ -12,6 +12,7 @@ class FeatureFlagV2RowData:
     config_value: str | None
     keadmin_feature_name: str | None
     keadmin_features_hyperlink: str | None
-    keadmin_adjustments_hyperlink: int | None
-    keadmin_adjustments_new_hyperlink: int | None
-    youtrack_hyperlink: str
+    keadmin_adjustments_hyperlink: str | None
+    keadmin_adjustments_new_hyperlink: str | None
+    youtrack_flag_name: str | None
+    youtrack_issues_hyperlink: str | None

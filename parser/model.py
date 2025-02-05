@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Iterator
 
 
 @dataclass
@@ -30,4 +31,14 @@ class FeatureFlagV2:
 
     @property
     def youtrack_search_name(self) -> str:
-        return self.config_search_name
+        if self.global_name:
+            return self.global_name
+        return self.keadmin_search_name
+        # todo
+        # if self.global_name:
+        #     yield self.global_name
+        # if self.consumer_name:
+        #     yield "Features." + self.consumer_name
+        #     yield self.consumer_name
+        # yield "Features." + self.property_name
+        # yield self.property_name

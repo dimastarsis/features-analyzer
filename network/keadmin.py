@@ -9,7 +9,7 @@ from .base import API
 
 async def _fetch_keadmin(url: str) -> JsonData:
     headers = {"Cookie": KEADMIN_COOKIE}
-    response = await API.get(url, headers)
+    response = await API.get(url, headers=headers)
     return json.loads(response)
 
 

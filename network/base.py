@@ -23,11 +23,20 @@ class ApiHandler(metaclass=Singleton):
             self.session = aiohttp.ClientSession()
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5))
-    async def get(self, url: str, headers: dict = None) -> str:
+    async def get(self, url: str, **kwargs) -> str:
         if not self.session:
             raise ConnectionError("Сессия не была открыта")
         async with self.semaphore:
-            async with self.session.get(url, headers=headers) as response:
+            async with self.session.get(url, **kwargs) as response:
+                response.raise_for_status()  # eсли 4xx/5xx -> будет повторный запрос
+                return await response.text()
+
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.5))
+    async def post(self, url: str, **kwargs) -> str:
+        if not self.session:
+            raise ConnectionError("Сессия не была открыта")
+        async with self.semaphore:
+            async with self.session.post(url, **kwargs) as response:
                 response.raise_for_status()  # eсли 4xx/5xx -> будет повторный запрос
                 return await response.text()
 

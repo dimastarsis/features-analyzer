@@ -18,7 +18,6 @@ def map_analyze_result(
     property_url = GITLAB_URL + (f"/search?search={result.feature_v2_flag.property_name}"
                                  f"&nav_source=navbar&project_id={features_v2_file.project_id}"
                                  f"&search_code=true&repository_ref={features_v2_file.reference.branch}")
-    youtrack_issues_url = YOUTRACK_URL + f"/issues/Flag?q={result.feature_v2_flag.youtrack_search_name}"
 
     config_flag_url: str = None
     if result.config_flag:
@@ -34,6 +33,10 @@ def map_analyze_result(
         keadmin_adjustments_url = KEADMIN_URL + (f"/Adjustments?UserId=&Name={result.keadmin_info.feature_name}&Value"
                                                  "=&Download=false&GetOnlyIds=undefined")
         keadmin_adjustments_new_url = KEADMIN_URL + f"/AdjustmentsNew?n={result.keadmin_info.feature_name}"
+
+    youtrack_issues_url: str = None
+    if result.youtrack_info:
+        youtrack_issues_url = YOUTRACK_URL + f"/issues/Flag?q={result.youtrack_info.feature_name}"
 
     return FeatureFlagV2RowData(
         property_name=result.feature_v2_flag.property_name,
@@ -51,7 +54,9 @@ def map_analyze_result(
         keadmin_adjustments_new_hyperlink=get_hyperlink(
             keadmin_adjustments_new_url, result.keadmin_info.adjustments_new_count
         ) if result.keadmin_info else '-',
-        youtrack_hyperlink=get_hyperlink(youtrack_issues_url, "ссылка")
+        youtrack_flag_name=result.youtrack_info.feature_name if result.youtrack_info else '-',
+        youtrack_issues_hyperlink=get_hyperlink(youtrack_issues_url, result.youtrack_info.issues_count) \
+            if result.youtrack_info else '-'
     )
 
 
@@ -68,13 +73,13 @@ def write_csv(
             "FeatureFlagV2", "", "", "",
             "ClusterConfig", "", "",
             "KeAdmin", "", "", "",
-            "YouTrack",
+            "YouTrack", "",
         ]
         sub_headers = [
             "Название", "Ссылка", "Consumer", "Тип",
             "Название", "Ссылка", "Значение",
             "Название", "Features", "Настройки пользователей", "Adjustments",
-            "Issues",
+            "Название", "Issues",
         ]
 
         writer.writerow(headers)
