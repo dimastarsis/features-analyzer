@@ -3,13 +3,13 @@ from typing import Iterable
 from tqdm.asyncio import tqdm
 from .model import JsonData, KeAdminFlagInfo
 from .constant import KEADMIN_API_URL
-from .secret import KEADMIN_COOKIE
+from .secret import KEADMIN_AUTH_SID
 from .base import API
 
 
 async def _fetch_keadmin(url: str) -> JsonData:
-    headers = {"Cookie": KEADMIN_COOKIE}
-    response = await API.get(url, headers=headers)
+    cookies = {'auth.sid': KEADMIN_AUTH_SID}
+    response = await API.get(url, cookies=cookies)
     return json.loads(response)
 
 

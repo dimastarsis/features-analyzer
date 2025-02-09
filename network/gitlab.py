@@ -37,6 +37,6 @@ async def fetch_files(*file_refs: Iterable[GitLabFileReference]) -> Iterable[Git
     results_map: dict[GitLabFileReference, GitLabFile] = dict()
     for task in tqdm.as_completed(tasks, total=len(tasks), desc="Загружаем информацию из gitlab"):
         file = await task
-        results_map[file.reference] = file  # todo поаккуратнее
+        results_map[file.reference] = file
 
     return (results_map[file_ref] for file_ref in file_refs)

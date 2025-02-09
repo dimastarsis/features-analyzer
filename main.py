@@ -4,12 +4,16 @@ import parser
 import analyzer
 import writer
 
+FEATURES_V2_URL = ("https://git.skbkontur.ru/ke/ft/-/blob/master/FileTransfer.Lib/Providers/FeaturesV2"
+                   "/FeatureFlagsModel.cs")
+CONFIG_URL = "https://git.skbkontur.ru/sps/clusterconfig_storage_production/-/blob/default/ft/config"
+
 
 async def main() -> None:
     network.API.set_session()
 
-    features_v2_file = network.GitLabFileReference.parse(network.FEATURES_V2_URL)
-    config_file = network.GitLabFileReference.parse(network.CONFIG_URL)
+    features_v2_file = network.GitLabFileReference.parse(FEATURES_V2_URL)
+    config_file = network.GitLabFileReference.parse(CONFIG_URL)
 
     features_v2_file, config_file = await network.gitlab.fetch_files(features_v2_file, config_file)
 
@@ -32,7 +36,7 @@ async def main() -> None:
     writer.write_csv(analyze_results, features_v2_file, config_file)
 
 
-if __name__ == "__main__":  # todo тесты, убрать requests из .toml
+if __name__ == "__main__":
     loop = asyncio.get_event_loop()
 
     try:
